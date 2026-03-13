@@ -26,7 +26,8 @@ VV_BUILD_OPTS += $(VV_VFLAGS)
 VV_RUN_OPTS +=
 
 ifneq (,$(TRACE))
-RUN_ARGS += +bsg_trace
+TRACE_FILE ?= dump.fst
+RUN_ARGS += +c_args=+bsg_trace="$(TRACE_FILE)"
 endif
 
 run: ## runs the verilated executable
@@ -36,6 +37,9 @@ run: obj_dir/V$(TB_MODULE) | $(RUN_COLLATERAL)
 ifneq (,$(TRACE))
 BUILD_ARGS += --trace-fst --trace-structs
 BUILD_ARGS += +define+FSTON
+BUILD_ARGS += +define+BSG_NONSYNTH_WAVEFORM_TRACER_ENABLE
+BUILD_ARGS += +define+BSG_NONSYNTH_WAVEFORM_TRACER_DEPTH=0
+BUILD_ARGS += +define+BSG_NONSYNTH_WAVEFORM_TRACER_HIER=bsg_nonsynth_zynq_testbench.dut
 endif
 build: ## builds the verilated executable
 build: %/V$(TB_MODULE)
